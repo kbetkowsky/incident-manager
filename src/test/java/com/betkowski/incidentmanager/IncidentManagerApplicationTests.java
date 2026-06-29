@@ -1,4 +1,4 @@
-package com.betkowski.incident_manager;
+package com.betkowski.incidentmanager;
 
 import org.junit.jupiter.api.Test;
 import org.springframework.boot.test.context.SpringBootTest;
@@ -13,3 +13,4 @@ class IncidentManagerApplicationTests {
 	}
 
 }
+

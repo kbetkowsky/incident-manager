@@ -1,4 +1,4 @@
-package com.betkowski.incident_manager;
+package com.betkowski.incidentmanager;
 
 import org.springframework.boot.SpringApplication;
 
@@ -9,3 +9,4 @@ public class TestIncidentManagerApplication {
 	}
 
 }
+
