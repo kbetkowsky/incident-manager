@@ -1,6 +1,7 @@
 package com.betkowski.incidentmanager.domain.model;
 
-public enum HostStatus {
+public enum DeviceStatus {
     ACTIVE,
-    INACTIVE
+    INACTIVE,
+    MAINTENANCE
 }
