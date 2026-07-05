@@ -13,8 +13,8 @@ import org.mockito.junit.jupiter.MockitoExtension;
 import java.time.Instant;
 import java.util.Optional;
 import java.util.UUID;
-import static org.junit.jupiter.api.Assertions.assertThrows;
-import static org.junit.jupiter.api.Assertions.assertEquals;
+
+import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.Mockito.*;
 
 @ExtendWith(MockitoExtension.class)
@@ -36,9 +36,10 @@ public class DeactivateDeviceUseCaseTest {
 
         when(deviceRepository.findById(deviceId)).thenReturn(Optional.of(device));
 
-        useCase.execute(deviceId);
+        Device result = useCase.execute(deviceId);
 
         assertEquals(DeviceStatus.INACTIVE, device.getStatus());
+        assertSame(device, result);
         verify(deviceRepository).save(device);
     }
 
@@ -49,9 +50,10 @@ public class DeactivateDeviceUseCaseTest {
 
         when(deviceRepository.findById(deviceId)).thenReturn(Optional.of(device));
 
-        useCase.execute(deviceId);
+        Device result = useCase.execute(deviceId);
 
         assertEquals(DeviceStatus.INACTIVE, device.getStatus());
+        assertSame(device, result);
         verify(deviceRepository).save(device);
     }
 
