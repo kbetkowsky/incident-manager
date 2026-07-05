@@ -12,8 +12,7 @@ import org.mockito.junit.jupiter.MockitoExtension;
 
 import java.time.Instant;
 
-import static org.junit.jupiter.api.Assertions.assertThrows;
-import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.Mockito.*;
 
 import java.util.Optional;
@@ -40,10 +39,11 @@ public class EnterDeviceMaintenanceUseCaseTest {
         when(deviceRepository.findById(deviceId)).thenReturn(Optional.of(device));
 
         // ACT
-        useCase.execute(deviceId);
+        Device result = useCase.execute(deviceId);
 
         // ASSERT/VERIFY
         assertEquals(DeviceStatus.MAINTENANCE, device.getStatus());
+        assertSame(device, result);
         verify(deviceRepository).save(device);
     }
 
