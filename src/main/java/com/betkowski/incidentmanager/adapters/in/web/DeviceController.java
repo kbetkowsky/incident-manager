@@ -1,15 +1,17 @@
 package com.betkowski.incidentmanager.adapters.in.web;
 
+import com.betkowski.incidentmanager.application.CreateDeviceUseCase;
 import com.betkowski.incidentmanager.application.DeactivateDeviceUseCase;
 import com.betkowski.incidentmanager.application.EnterDeviceMaintenanceUseCase;
+import com.betkowski.incidentmanager.application.RecordDeviceEventUseCase;
 import com.betkowski.incidentmanager.domain.model.Device;
+import com.betkowski.incidentmanager.domain.model.Event;
 import lombok.RequiredArgsConstructor;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
+import java.net.URI;
 import java.util.UUID;
 
 @RestController
@@ -18,6 +20,8 @@ import java.util.UUID;
 public class DeviceController {
     private final DeactivateDeviceUseCase deactivateDeviceUseCase;
     private final EnterDeviceMaintenanceUseCase enterDeviceMaintenanceUseCase;
+    private final CreateDeviceUseCase createDeviceUseCase;
+    private final RecordDeviceEventUseCase recordDeviceEventUseCase;
 
     @PostMapping("/{id}/maintenance")
     public ResponseEntity<DeviceResponse> enterMaintenance(@PathVariable UUID id) {
@@ -31,5 +35,17 @@ public class DeviceController {
         return ResponseEntity.ok(DeviceResponse.from(device));
     }
 
+    @PostMapping
+    public ResponseEntity<DeviceResponse> create(@RequestBody DeviceRequest request) {
+        Device device = createDeviceUseCase.execute(request.name(), request.address());
+        URI location = URI.create("/devices/" + device.getId());
+        return ResponseEntity.created(location).body(DeviceResponse.from(device));
+    }
 
+    @PostMapping("/{id}/events")
+    public ResponseEntity<EventResponse> recordEvent(@PathVariable UUID id,
+                                                     @RequestBody EventRequest request) {
+        Event event = recordDeviceEventUseCase.execute(id, request.eventType());
+        return ResponseEntity.status(HttpStatus.CREATED).body(EventResponse.from(event));
+    }
 }
