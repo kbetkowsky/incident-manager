@@ -1,7 +1,6 @@
 package com.betkowski.incidentmanager.adapters.in.web;
 
 import com.betkowski.incidentmanager.domain.model.Device;
-import com.betkowski.incidentmanager.domain.model.DeviceStatus;
 
 import java.util.UUID;
 
