@@ -12,19 +12,6 @@ public class IncidentTest {
 
     private Incident incident;
     UUID incidentId = UUID.fromString("0da60571-10a5-491e-8857-5773d0d7c450");
-    private Incident restoreIncident() {
-        Instant now = Instant.now();
-        return Incident.restore(
-                UUID.randomUUID(),
-                UUID.randomUUID(),
-                "Router-01",
-                EventType.UNRESPONSIVE,
-                IncidentStatus.OPEN,
-                1,
-                now,
-                now
-        );
-    }
 
     @BeforeEach
     public void setUp() {
