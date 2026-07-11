@@ -23,8 +23,8 @@ public class Incident {
         this.eventType = Objects.requireNonNull(eventType, "Event type cannot be null");
         this.status = Objects.requireNonNull(status, "Incident status cannot be null");
         this.occurrenceCount = occurrenceCount;
-        this.firstOccurredAt = firstOccurredAt;
-        this.lastOccurredAt = lastOccurredAt;
+        this.firstOccurredAt = Objects.requireNonNull(firstOccurredAt, "First occurred date cannot be null");
+        this.lastOccurredAt = Objects.requireNonNull(lastOccurredAt, "Last occurred date cannot be null");
     }
 
     public static Incident create(UUID deviceId, String deviceName, EventType eventType) {
