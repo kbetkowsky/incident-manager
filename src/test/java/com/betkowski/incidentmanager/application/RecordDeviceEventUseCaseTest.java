@@ -28,11 +28,14 @@ public class RecordDeviceEventUseCaseTest {
     @Mock
     private EventRepository eventRepository;
 
+    @Mock
+    EventEscalationUseCase eventEscalationUseCase;
+
     private RecordDeviceEventUseCase useCase;
 
     @BeforeEach
     void setUp() {
-        useCase = new RecordDeviceEventUseCase(deviceRepository, eventRepository);
+        useCase = new RecordDeviceEventUseCase(deviceRepository, eventRepository, eventEscalationUseCase);
     }
 
     @Test

@@ -1,6 +1,7 @@
 package com.betkowski.incidentmanager.adapters.in.web;
 
 import com.betkowski.incidentmanager.application.exceptions.DeviceNotFoundException;
+import com.betkowski.incidentmanager.application.exceptions.IncidentNotFoundException;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.ExceptionHandler;
@@ -22,5 +23,10 @@ public class GlobalExceptionHandler {
     @ExceptionHandler(IllegalArgumentException.class)
     public ResponseEntity<String> handleIllegalArgument(IllegalArgumentException ex) {
         return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(ex.getMessage());
+    }
+
+    @ExceptionHandler(IncidentNotFoundException.class)
+    public ResponseEntity<String> handleIncidentNotFound(IncidentNotFoundException ex) {
+        return ResponseEntity.status(HttpStatus.NOT_FOUND).body(ex.getMessage());
     }
 }

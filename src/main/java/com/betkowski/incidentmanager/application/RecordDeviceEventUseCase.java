@@ -13,11 +13,14 @@ import java.util.UUID;
 public class RecordDeviceEventUseCase {
     private final DeviceRepository deviceRepository;
     private final EventRepository eventRepository;
+    private final EventEscalationUseCase eventEscalationUseCase;
 
-    public RecordDeviceEventUseCase(DeviceRepository deviceRepository, EventRepository eventRepository) {
+    public RecordDeviceEventUseCase(DeviceRepository deviceRepository, EventRepository eventRepository, EventEscalationUseCase eventEscalationUseCase) {
         this.deviceRepository = deviceRepository;
         this.eventRepository = eventRepository;
+        this.eventEscalationUseCase = eventEscalationUseCase;
     }
+
 
     public Event execute(UUID deviceId, EventType eventType) {
         Optional<Device> deviceOptional = deviceRepository.findById(deviceId);
@@ -26,6 +29,7 @@ public class RecordDeviceEventUseCase {
        ));
         Event event = Event.create(deviceId, device.getName(), eventType);
         eventRepository.save(event);
+        eventEscalationUseCase.execute(event);
         return event;
     }
 }

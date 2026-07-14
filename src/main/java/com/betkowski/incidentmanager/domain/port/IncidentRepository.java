@@ -8,5 +8,6 @@ import java.util.UUID;
 
 public interface IncidentRepository {
     void save(Incident incident);
+    Optional<Incident> findById(UUID id);
     Optional<Incident> findActiveByDeviceIdAndEventType(UUID deviceId, EventType eventType);
 }
