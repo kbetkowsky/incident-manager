@@ -24,6 +24,11 @@ public class IncidentRepositoryAdapter implements IncidentRepository {
     }
 
     @Override
+    public Optional<Incident> findById(UUID id) {
+        return repository.findById(id).map(mapper::toDomain);
+    }
+
+    @Override
     public Optional<Incident> findActiveByDeviceIdAndEventType(UUID deviceId, EventType eventType) {
         return repository.findByDeviceIdAndEventTypeAndStatusNot(deviceId, eventType, IncidentStatus.RESOLVED)
                 .map(mapper::toDomain);

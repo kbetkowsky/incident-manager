@@ -8,5 +8,6 @@ import java.util.Optional;
 import java.util.UUID;
 
 public interface IncidentJpaRepository extends JpaRepository<IncidentEntity, UUID> {
+    Optional<IncidentEntity> findById(UUID id);
     Optional<IncidentEntity> findByDeviceIdAndEventTypeAndStatusNot(UUID deviceId, EventType eventType,IncidentStatus excludedStatus);
 }

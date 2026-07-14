@@ -40,4 +40,16 @@ public class UseCaseConfig {
     EventRepository eventRepository, IncidentRepository incidentRepository) {
         return new EventEscalationUseCase(escalationRuleRepository, eventRepository, incidentRepository);
     }
+
+    @Bean
+    public AcknowledgeIncidentUseCase acknowledgeIncidentUseCase(
+            IncidentRepository incidentRepository
+    ) {
+        return new AcknowledgeIncidentUseCase(incidentRepository);
+    }
+
+    @Bean
+    public ResolveIncidentUseCase resolveIncidentUseCase(IncidentRepository incidentRepository) {
+        return new ResolveIncidentUseCase(incidentRepository);
+    }
 }

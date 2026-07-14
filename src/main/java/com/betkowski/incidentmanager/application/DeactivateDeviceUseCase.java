@@ -3,7 +3,6 @@ package com.betkowski.incidentmanager.application;
 import com.betkowski.incidentmanager.application.exceptions.DeviceNotFoundException;
 import com.betkowski.incidentmanager.domain.model.Device;
 import com.betkowski.incidentmanager.domain.port.DeviceRepository;
-import org.springframework.stereotype.Component;
 
 import java.util.Optional;
 import java.util.UUID;
