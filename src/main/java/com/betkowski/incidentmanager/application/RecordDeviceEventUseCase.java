@@ -6,6 +6,7 @@ import com.betkowski.incidentmanager.domain.model.Event;
 import com.betkowski.incidentmanager.domain.model.EventType;
 import com.betkowski.incidentmanager.domain.port.DeviceRepository;
 import com.betkowski.incidentmanager.domain.port.EventRepository;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.Optional;
 import java.util.UUID;
@@ -21,7 +22,7 @@ public class RecordDeviceEventUseCase {
         this.eventEscalationUseCase = eventEscalationUseCase;
     }
 
-
+    @Transactional
     public Event execute(UUID deviceId, EventType eventType) {
         Optional<Device> deviceOptional = deviceRepository.findById(deviceId);
         Device device = deviceOptional.orElseThrow(() -> new DeviceNotFoundException(
