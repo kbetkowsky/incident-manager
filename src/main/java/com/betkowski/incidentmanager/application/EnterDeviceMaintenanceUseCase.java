@@ -4,6 +4,7 @@ import com.betkowski.incidentmanager.application.exceptions.DeviceNotFoundExcept
 import com.betkowski.incidentmanager.domain.model.Device;
 import com.betkowski.incidentmanager.domain.port.DeviceRepository;
 import org.springframework.stereotype.Component;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.Optional;
 import java.util.UUID;
@@ -16,6 +17,7 @@ public class EnterDeviceMaintenanceUseCase {
         this.deviceRepository = deviceRepository;
     }
 
+    @Transactional
     public Device execute(UUID deviceId) {
         Optional<Device> deviceOptional = deviceRepository.findById(deviceId);
         Device device = deviceOptional.orElseThrow(() ->
