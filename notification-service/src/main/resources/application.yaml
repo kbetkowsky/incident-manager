@@ -1,6 +1,8 @@
 spring:
   kafka:
     bootstrap-servers: localhost:9092
+    listener:
+      observation-enabled: true
     consumer:
       group-id: notification-service
       auto-offset-reset: earliest
@@ -14,6 +16,17 @@ spring:
       key-serializer: org.apache.kafka.common.serialization.StringSerializer
       value-serializer: org.springframework.kafka.support.serializer.JacksonJsonSerializer
 
+management:
+  tracing:
+    sampling:
+      probability: 1.0
+  otlp:
+    metrics:
+      export:
+        enabled: false
+    tracing:
+      export:
+        enabled: false
 
 app:
   kafka:
