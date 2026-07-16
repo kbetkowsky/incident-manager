@@ -1,5 +1,6 @@
 package com.betkowski.incidentmanager.application;
 
+import com.betkowski.incidentmanager.domain.event.IncidentCreated;
 import com.betkowski.incidentmanager.domain.model.*;
 import com.betkowski.incidentmanager.domain.port.EscalationRuleRepository;
 import com.betkowski.incidentmanager.domain.port.EventRepository;
@@ -9,6 +10,7 @@ import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
+import org.springframework.context.ApplicationEventPublisher;
 
 import java.time.Instant;
 import java.util.Optional;
@@ -25,12 +27,15 @@ public class EventEscalationUseCaseTest {
     private EventRepository eventRepository;
     @Mock
     private IncidentRepository incidentRepository;
+    @Mock
+    private ApplicationEventPublisher applicationEventPublisher;
 
     private EventEscalationUseCase useCase;
 
     @BeforeEach
     void setUp() {
-        useCase = new EventEscalationUseCase(escalationRuleRepository, eventRepository, incidentRepository);
+        useCase = new EventEscalationUseCase(escalationRuleRepository, eventRepository, incidentRepository
+        , applicationEventPublisher);
     }
 
     @Test
@@ -67,6 +72,7 @@ public class EventEscalationUseCaseTest {
         useCase.execute(event);
 
         verify(incidentRepository).save(any(Incident.class));
+        verify(applicationEventPublisher).publishEvent(any(IncidentCreated.class));
     }
 
     @Test
@@ -85,5 +91,6 @@ public class EventEscalationUseCaseTest {
 
         assertEquals(2, existingIncident.getOccurrenceCount());
         verify(incidentRepository).save(existingIncident);
+        verify(applicationEventPublisher, never()).publishEvent(any());
     }
 }
