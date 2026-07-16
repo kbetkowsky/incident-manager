@@ -7,9 +7,11 @@ on:
     branches: [ main ]
 
 jobs:
-  build-and-test:
+  incident-manager:
     runs-on: ubuntu-latest
-
+    defaults:
+      run:
+        working-directory: incident-manager
     steps:
       - name: Checkout code
         uses: actions/checkout@v4
