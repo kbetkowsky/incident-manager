@@ -6,6 +6,7 @@ import com.betkowski.incidentmanager.domain.port.DeviceRepository;
 import com.betkowski.incidentmanager.domain.port.EscalationRuleRepository;
 import com.betkowski.incidentmanager.domain.port.EventRepository;
 import com.betkowski.incidentmanager.domain.port.IncidentRepository;
+import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 
@@ -37,8 +38,10 @@ public class UseCaseConfig {
     @Bean
     public EventEscalationUseCase eventEscalationUseCase(
             EscalationRuleRepository escalationRuleRepository,
-    EventRepository eventRepository, IncidentRepository incidentRepository) {
-        return new EventEscalationUseCase(escalationRuleRepository, eventRepository, incidentRepository);
+            EventRepository eventRepository, IncidentRepository incidentRepository,
+            ApplicationEventPublisher applicationEventPublisher) {
+        return new EventEscalationUseCase(escalationRuleRepository, eventRepository,
+                incidentRepository, applicationEventPublisher);
     }
 
     @Bean
