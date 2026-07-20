@@ -16,6 +16,9 @@ spring:
       key-serializer: org.apache.kafka.common.serialization.StringSerializer
       value-serializer: org.springframework.kafka.support.serializer.JacksonJsonSerializer
 
+server:
+  port: 8081
+
 management:
   tracing:
     sampling:
@@ -27,6 +30,13 @@ management:
     tracing:
       export:
         enabled: false
+  endpoints:
+    web:
+      exposure:
+        include: health, prometheus
+  metrics:
+    tags:
+      application: notification-service
 
 app:
   kafka:
