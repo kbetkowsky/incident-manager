@@ -29,6 +29,14 @@ management:
     tracing:
       export:
         enabled: false
+  endpoints:
+    web:
+      exposure:
+        include: health, prometheus
+  metrics:
+    tags:
+      application: incident-manager
+
 
 app:
   kafka:
