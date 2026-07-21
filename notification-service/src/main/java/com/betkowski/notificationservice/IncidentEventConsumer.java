@@ -7,10 +7,14 @@ import org.springframework.stereotype.Component;
 
 @Component
 public class IncidentEventConsumer {
-    private static final Logger log = LoggerFactory.getLogger(IncidentEventConsumer.class);
+    private final NotificationSender notificationSender;
+
+    public IncidentEventConsumer(NotificationSender notificationSender) {
+        this.notificationSender = notificationSender;
+    }
 
     @KafkaListener(topics = "${app.kafka.incidents-topic}", groupId = "notification-service")
     public void onEvent(IncidentCreated event) {
-        log.info("Would send notification for incident {} to {}", event.incidentId(), event.deviceName());
+        notificationSender.send(event);
     }
 }
