@@ -55,4 +55,9 @@ public class UseCaseConfig {
     public ResolveIncidentUseCase resolveIncidentUseCase(IncidentRepository incidentRepository) {
         return new ResolveIncidentUseCase(incidentRepository);
     }
+
+    @Bean
+    public GetDevicesUseCase getDevicesUseCase(DeviceRepository deviceRepository) {
+        return new GetDevicesUseCase(deviceRepository);
+    }
 }

@@ -1,9 +1,6 @@
 package com.betkowski.incidentmanager.adapters.in.web;
 
-import com.betkowski.incidentmanager.application.CreateDeviceUseCase;
-import com.betkowski.incidentmanager.application.DeactivateDeviceUseCase;
-import com.betkowski.incidentmanager.application.EnterDeviceMaintenanceUseCase;
-import com.betkowski.incidentmanager.application.RecordDeviceEventUseCase;
+import com.betkowski.incidentmanager.application.*;
 import com.betkowski.incidentmanager.domain.model.Device;
 import com.betkowski.incidentmanager.domain.model.Event;
 import lombok.RequiredArgsConstructor;
@@ -12,6 +9,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.net.URI;
+import java.util.List;
 import java.util.UUID;
 
 @RestController
@@ -22,6 +20,7 @@ public class DeviceController {
     private final EnterDeviceMaintenanceUseCase enterDeviceMaintenanceUseCase;
     private final CreateDeviceUseCase createDeviceUseCase;
     private final RecordDeviceEventUseCase recordDeviceEventUseCase;
+    private final GetDevicesUseCase getDevicesUseCase;
 
     @PostMapping("/{id}/maintenance")
     public ResponseEntity<DeviceResponse> enterMaintenance(@PathVariable UUID id) {
@@ -47,5 +46,14 @@ public class DeviceController {
                                                      @RequestBody EventRequest request) {
         Event event = recordDeviceEventUseCase.execute(id, request.eventType());
         return ResponseEntity.status(HttpStatus.CREATED).body(EventResponse.from(event));
+    }
+
+    @GetMapping
+    public ResponseEntity<List<DeviceResponse>> getAllDevices() {
+        List<Device> devices = getDevicesUseCase.execute();
+        List<DeviceResponse> body = devices.stream()
+                .map(DeviceResponse::from)
+                .toList();
+        return ResponseEntity.ok(body);
     }
 }
