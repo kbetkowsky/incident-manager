@@ -7,6 +7,7 @@ import com.betkowski.incidentmanager.domain.port.IncidentRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Repository;
 
+import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
 
@@ -32,5 +33,10 @@ public class IncidentRepositoryAdapter implements IncidentRepository {
     public Optional<Incident> findActiveByDeviceIdAndEventType(UUID deviceId, EventType eventType) {
         return repository.findByDeviceIdAndEventTypeAndStatusNot(deviceId, eventType, IncidentStatus.RESOLVED)
                 .map(mapper::toDomain);
+    }
+
+    @Override
+    public List<Incident> findAll() {
+        return repository.findAll().stream().map(mapper::toDomain).toList();
     }
 }

@@ -5,6 +5,7 @@ import com.betkowski.incidentmanager.domain.port.DeviceRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Repository;
 
+import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
 
@@ -24,5 +25,12 @@ public class DeviceRepositoryAdapter implements DeviceRepository {
     public void save(Device device) {
         DeviceEntity entity = mapper.toEntity(device);
         jpaRepository.save(entity);
+    }
+
+    @Override
+    public List<Device> findAll() {
+        return jpaRepository.findAll().stream()
+                .map(mapper::toDomain)
+                .toList();
     }
 }

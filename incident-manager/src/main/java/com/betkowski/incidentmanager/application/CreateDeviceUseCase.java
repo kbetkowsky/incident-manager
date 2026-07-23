@@ -17,5 +17,4 @@ public class CreateDeviceUseCase {
         deviceRepository.save(device);
         return device;
     }
-
 }
