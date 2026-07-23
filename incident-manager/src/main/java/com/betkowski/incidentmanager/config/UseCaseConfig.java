@@ -60,4 +60,9 @@ public class UseCaseConfig {
     public GetDevicesUseCase getDevicesUseCase(DeviceRepository deviceRepository) {
         return new GetDevicesUseCase(deviceRepository);
     }
+
+    @Bean
+    public ListIncidentsUseCase listIncidentsUseCase(IncidentRepository incidentRepository) {
+        return new ListIncidentsUseCase(incidentRepository);
+    }
 }
