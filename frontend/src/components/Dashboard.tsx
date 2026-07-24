@@ -14,6 +14,8 @@ const STATUS_COLORS: Record<string, string> = {
   MAINTENANCE: '#c07600',
   INACTIVE: '#8a8f98',
 }
+const INCIDENT_ORDER: Record<string, number> = { OPEN: 0, ACKNOWLEDGED: 1, RESOLVED: 2 }
+const DEVICE_ORDER: Record<string, number> = { MAINTENANCE: 0, INACTIVE: 1, ACTIVE: 2 }
 
 function Status({ value }: { value: string }) {
   return (
@@ -52,6 +54,13 @@ export default function Dashboard({ onLogout }: Props) {
     load()
   }, [load])
 
+  const sortedIncidents = [...incidents].sort(
+  (a, b) =>
+    INCIDENT_ORDER[a.status] - INCIDENT_ORDER[b.status] ||
+    new Date(b.lastOccurredAt).getTime() - new Date(a.lastOccurredAt).getTime(),
+)
+  const sortedDevices = [...devices].sort((a, b) => DEVICE_ORDER[a.status] - DEVICE_ORDER[b.status])
+
   return (
     <div>
       <header className="topbar">
@@ -86,7 +95,7 @@ export default function Dashboard({ onLogout }: Props) {
                 </td>
               </tr>
             ) : (
-              incidents.map((i) => (
+              sortedIncidents.map((i) => (
                 <tr key={i.id}>
                   <td>
                     <Status value={i.status} />
@@ -118,7 +127,7 @@ export default function Dashboard({ onLogout }: Props) {
                 </td>
               </tr>
             ) : (
-              devices.map((d) => (
+              sortedDevices.map((d) => (
                 <tr key={d.id}>
                   <td>
                     <Status value={d.status} />
