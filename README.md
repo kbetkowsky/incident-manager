@@ -67,35 +67,33 @@ Requests are traced across both services with OpenTelemetry.
 - Actuator + Prometheus + Grafana
 - JUnit 5, Mockito, Testcontainers
 - React + TypeScript + Vite (frontend)
+- Docker and Docker Compose (both services run as containers)
 - Gradle (Kotlin DSL), GitHub Actions for CI
 
 ## Getting started
 
-You need JDK 21, Docker, and Node.js.
+You need Docker and Node.js.
 
-**1. Start the infrastructure** (Postgres, Kafka, Prometheus, Grafana):
+**1. Create your `.env` file:**
+
+```bash
+cp .env.example .env
+```
+
+Open it and set your own values, especially `JWT_SECRET`. It has no default, so
+the app will not start without it.
+
+**2. Start everything:**
 
 ```bash
 docker compose up -d
 ```
 
-**2. Run the core service** (migrations run on startup):
+This builds both services and starts them together with Postgres, Kafka,
+Prometheus and Grafana. The API is on http://localhost:8080 and the notification
+service on http://localhost:8081.
 
-```bash
-cd incident-manager
-./gradlew bootRun
-```
-
-The API starts on http://localhost:8080.
-
-**3. Run the notification service:**
-
-```bash
-cd notification-service
-./gradlew bootRun
-```
-
-**4. Run the frontend:**
+**3. Run the frontend:**
 
 ```bash
 cd frontend
@@ -103,15 +101,15 @@ npm install
 npm run dev
 ```
 
-Open http://localhost:5173 and log in with the default account:
+Open http://localhost:5173 and log in:
 
 ```
 username: admin
 password: admin123
 ```
 
-The JWT secret has a development default. You can change it with the
-`JWT_SECRET` environment variable.
+This account is created only when the `dev` profile is active, which is the case
+in Docker Compose.
 
 ## Project structure
 
@@ -120,7 +118,7 @@ incident-manager/       core service: REST API, domain, escalation, security
 notification-service/   Kafka consumer that sends notifications
 frontend/               React + Vite client (login + dashboard)
 grafana/                dashboards and provisioning
-docker-compose.yml      Postgres, Kafka, Prometheus, Grafana
+docker-compose.yml      runs both services, Postgres, Kafka, Prometheus, Grafana
 ```
 
 ## API
@@ -174,7 +172,8 @@ them and Grafana shows them. The provisioning and a starter dashboard are in
 ## Roadmap
 
 Phase 1 (done): the core domain, escalation rules, Kafka and the notification
-service, JWT security, observability, CI, and the small frontend.
+service, JWT security, observability, CI, and the small frontend. Both services
+run in Docker and the whole stack starts with one command.
 
 Next steps I want to add:
 
