@@ -9,6 +9,11 @@ services:
       - 5440:5432
     volumes:
       - postgres_data:/var/lib/postgresql/data
+    healthcheck:
+      test: [ "CMD-SHELL", "pg_isready -U user -d incident_manager" ]
+      interval: 5s
+      timeout: 3s
+      retries: 10
 
   kafka:
     image: apache/kafka:3.9.0
@@ -43,6 +48,17 @@ services:
     volumes:
       - ./grafana/provisioning:/etc/grafana/provisioning
       - ./grafana/dashboards:/var/lib/grafana/dashboards
+
+  incident-manager:
+    build:
+      context: ./incident-manager
+    ports:
+        - "8080:8080"
+    environment:
+        SPRING_DATASOURCE_URL: jdbc:postgresql://postgres:5432/incident_manager
+    depends_on:
+        postgres:
+          condition: service_healthy
 
 volumes:
   postgres_data:
