@@ -162,6 +162,9 @@ cd incident-manager
 
 CI runs the tests on every push and pull request to `main`.
 
+JaCoCo generates a coverage report at
+`incident-manager/build/reports/jacoco/test/html/index.html` after running the tests.
+
 ## Observability
 
 Both services expose Actuator metrics in Prometheus format. Prometheus scrapes
