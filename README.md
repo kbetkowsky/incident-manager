@@ -65,14 +65,15 @@ Requests are traced across both services with OpenTelemetry.
 - MapStruct for entity/domain mapping
 - Micrometer Tracing + OpenTelemetry
 - Actuator + Prometheus + Grafana
-- JUnit 5, Mockito, Testcontainers
+- JUnit 5, Mockito, Testcontainers, JaCoCo
 - React + TypeScript + Vite (frontend)
-- Docker and Docker Compose (both services run as containers)
+- nginx serving the frontend and proxying the API
+- Docker and Docker Compose (everything runs in containers)
 - Gradle (Kotlin DSL), GitHub Actions for CI
 
 ## Getting started
 
-You need Docker and Node.js.
+You need Docker.
 
 **1. Create your `.env` file:**
 
@@ -89,17 +90,9 @@ the app will not start without it.
 docker compose up -d
 ```
 
-This builds both services and starts them together with Postgres, Kafka,
-Prometheus and Grafana. The API is on http://localhost:8080 and the notification
-service on http://localhost:8081.
-
-**3. Run the frontend:**
-
-```bash
-cd frontend
-npm install
-npm run dev
-```
+This builds and runs both services and the frontend, together with Postgres,
+Kafka, Prometheus and Grafana. The frontend is served by nginx, which also
+proxies the API calls to the core service.
 
 Open http://localhost:5173 and log in:
 
@@ -116,9 +109,9 @@ in Docker Compose.
 ```
 incident-manager/       core service: REST API, domain, escalation, security
 notification-service/   Kafka consumer that sends notifications
-frontend/               React + Vite client (login + dashboard)
+frontend/               React + Vite client, nginx config for the container
 grafana/                dashboards and provisioning
-docker-compose.yml      runs both services, Postgres, Kafka, Prometheus, Grafana
+docker-compose.yml      runs everything: both services, frontend, Postgres, Kafka, Prometheus, Grafana
 ```
 
 ## API
@@ -160,10 +153,12 @@ cd incident-manager
 ./gradlew test
 ```
 
-CI runs the tests on every push and pull request to `main`.
-
 JaCoCo generates a coverage report at
-`incident-manager/build/reports/jacoco/test/html/index.html` after running the tests.
+`incident-manager/build/reports/jacoco/test/html/index.html` after the tests run.
+Coverage is highest where the logic is (domain and use cases) and low in the
+adapters, which are mostly generated mappers and JPA entities.
+
+CI runs the tests on every push and pull request to `main`.
 
 ## Observability
 
@@ -175,14 +170,15 @@ them and Grafana shows them. The provisioning and a starter dashboard are in
 ## Roadmap
 
 Phase 1 (done): the core domain, escalation rules, Kafka and the notification
-service, JWT security, observability, CI, and the small frontend. Both services
-run in Docker and the whole stack starts with one command.
+service, JWT security, observability, CI, and the small frontend.
+
+Phase 2 (done): everything runs in containers and starts with one command,
+secrets moved to environment variables, coverage reports with JaCoCo.
 
 Next steps I want to add:
 
 - Kubernetes manifests to run it locally
 - Deploy to AWS (RDS, ECR, ECS Fargate)
-- Test coverage reports with JaCoCo
 - An AI advisor service that suggests fixes based on past incidents
 
 ## License
