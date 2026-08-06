@@ -81,5 +81,13 @@ services:
       - ./grafana/provisioning:/etc/grafana/provisioning
       - ./grafana/dashboards:/var/lib/grafana/dashboards
 
+  frontend:
+    build:
+      context: ./frontend
+    ports:
+      - "5173:80"
+    depends_on:
+      - incident-manager
+
 volumes:
   postgres_data:
