@@ -9,5 +9,5 @@ import java.util.UUID;
 public interface DeviceRepository {
     Optional<Device> findById(UUID id);
     void save(Device device);
-    List<Device> findAll();
+    List<Device> findAll(int page, int size);
 }

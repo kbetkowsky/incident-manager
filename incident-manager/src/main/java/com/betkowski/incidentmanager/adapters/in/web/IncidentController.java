@@ -32,8 +32,12 @@ public class IncidentController {
     }
 
     @GetMapping
-    public ResponseEntity<List<IncidentResponse>> getAll() {
-        List<IncidentResponse> responses = listIncidentsUseCase.execute().stream()
+    public ResponseEntity<List<IncidentResponse>> getAll(
+            @RequestParam(defaultValue = "0") int page,
+            @RequestParam(defaultValue = "20") int size
+    ) {
+        int safeSize = Math.min(size, 100);
+        List<IncidentResponse> responses = listIncidentsUseCase.execute(page, safeSize).stream()
                 .map(IncidentResponse::from).toList();
         return ResponseEntity.ok(responses);
     }

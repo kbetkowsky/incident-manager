@@ -5,6 +5,8 @@ import com.betkowski.incidentmanager.domain.model.Incident;
 import com.betkowski.incidentmanager.domain.model.IncidentStatus;
 import com.betkowski.incidentmanager.domain.port.IncidentRepository;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Repository;
 
 import java.util.List;
@@ -36,7 +38,10 @@ public class IncidentRepositoryAdapter implements IncidentRepository {
     }
 
     @Override
-    public List<Incident> findAll() {
-        return repository.findAll().stream().map(mapper::toDomain).toList();
+    public List<Incident> findAll(int page, int size) {
+        PageRequest pageRequest = PageRequest.of(page, size, Sort.by
+                ("lastOccurredAt").descending());
+        return repository.findAll(pageRequest)
+                .getContent().stream().map(mapper::toDomain).toList();
     }
 }
