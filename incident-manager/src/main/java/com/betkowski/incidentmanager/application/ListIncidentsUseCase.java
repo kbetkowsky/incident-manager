@@ -12,7 +12,7 @@ public class ListIncidentsUseCase {
         this.incidentRepository = incidentRepository;
     }
 
-    public List<Incident> execute() {
-        return incidentRepository.findAll();
+    public List<Incident> execute(int page, int size) {
+        return incidentRepository.findAll(page, size);
     }
 }
