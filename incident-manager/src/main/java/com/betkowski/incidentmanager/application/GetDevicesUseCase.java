@@ -12,8 +12,8 @@ public class GetDevicesUseCase {
         this.deviceRepository = deviceRepository;
     }
 
-    public List<Device> execute() {
-        List<Device> devices = deviceRepository.findAll();
+    public List<Device> execute(int page, int size) {
+        List<Device> devices = deviceRepository.findAll(page, size);
         return devices;
     }
 }

@@ -3,6 +3,8 @@ package com.betkowski.incidentmanager.adapters.out.persistence;
 import com.betkowski.incidentmanager.domain.model.Device;
 import com.betkowski.incidentmanager.domain.port.DeviceRepository;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Repository;
 
 import java.util.List;
@@ -28,8 +30,11 @@ public class DeviceRepositoryAdapter implements DeviceRepository {
     }
 
     @Override
-    public List<Device> findAll() {
-        return jpaRepository.findAll().stream()
+    public List<Device> findAll(int size, int page) {
+        PageRequest pageRequest = PageRequest.of(size, page, Sort.by("createdAt").descending());
+        return jpaRepository.findAll(pageRequest)
+                .getContent()
+                .stream()
                 .map(mapper::toDomain)
                 .toList();
     }

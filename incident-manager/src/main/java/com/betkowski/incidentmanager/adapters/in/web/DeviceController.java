@@ -49,8 +49,12 @@ public class DeviceController {
     }
 
     @GetMapping
-    public ResponseEntity<List<DeviceResponse>> getAllDevices() {
-        List<Device> devices = getDevicesUseCase.execute();
+    public ResponseEntity<List<DeviceResponse>> getAllDevices(
+            @RequestParam(defaultValue = "0") int page,
+            @RequestParam(defaultValue = "20") int size
+    ) {
+        int safeSize = Math.min(size, 100);
+        List<Device> devices = getDevicesUseCase.execute(page, safeSize);
         List<DeviceResponse> body = devices.stream()
                 .map(DeviceResponse::from)
                 .toList();
