@@ -63,6 +63,7 @@ Requests are traced across both services with OpenTelemetry.
 - PostgreSQL with Flyway migrations
 - Apache Kafka for messaging between services
 - MapStruct for entity/domain mapping
+- springdoc OpenAPI with Swagger UI
 - Micrometer Tracing + OpenTelemetry
 - Actuator + Prometheus + Grafana
 - JUnit 5, Mockito, Testcontainers, JaCoCo
@@ -116,17 +117,26 @@ docker-compose.yml      runs everything: both services, frontend, Postgres, Kafk
 
 ## API
 
-Some of the main endpoints. Everything except login needs a JWT:
+The full API is documented with OpenAPI. When the app is running, the docs are at
+http://localhost:8080/swagger-ui.html and the raw specification at
+http://localhost:8080/v3/api-docs.
+
+![Swagger UI](docs/screenshots/swagger.png)
+
+The main endpoints. Everything except login needs a JWT:
 
 | Method | Path | Description |
 | ------ | ---- | ----------- |
 | POST | `/auth/login` | Log in, returns a JWT |
-| GET  | `/devices` | List devices |
+| GET  | `/devices` | List devices, paged with `page` and `size` |
 | POST | `/devices` | Add a device |
 | POST | `/devices/{id}/events` | Record an event for a device |
-| GET  | `/incidents` | List incidents |
+| GET  | `/incidents` | List incidents, paged with `page` and `size` |
 | POST | `/incidents/{id}/acknowledge` | Acknowledge an incident |
 | POST | `/incidents/{id}/resolve` | Resolve an incident |
+
+Both list endpoints default to `page=0` and `size=20`. The page size is capped at
+100, so a client cannot ask for the whole table in one request.
 
 ## Screenshots
 
@@ -173,7 +183,8 @@ Phase 1 (done): the core domain, escalation rules, Kafka and the notification
 service, JWT security, observability, CI, and the small frontend.
 
 Phase 2 (done): everything runs in containers and starts with one command,
-secrets moved to environment variables, coverage reports with JaCoCo.
+secrets moved to environment variables, coverage reports with JaCoCo, paging on
+the list endpoints, and OpenAPI documentation.
 
 Next steps I want to add:
 
