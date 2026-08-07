@@ -23,6 +23,7 @@ also a small React frontend, so you can log in and see the data in the browser.
 - [Screenshots](#screenshots)
 - [Tests](#tests)
 - [Observability](#observability)
+- [Kubernetes](#kubernetes)
 - [Roadmap](#roadmap)
 - [License](#license)
 
@@ -70,6 +71,7 @@ Requests are traced across both services with OpenTelemetry.
 - React + TypeScript + Vite (frontend)
 - nginx serving the frontend and proxying the API
 - Docker and Docker Compose (everything runs in containers)
+- Kubernetes manifests for running the whole stack on a local cluster
 - Gradle (Kotlin DSL), GitHub Actions for CI
 
 ## Getting started
@@ -112,6 +114,7 @@ incident-manager/       core service: REST API, domain, escalation, security
 notification-service/   Kafka consumer that sends notifications
 frontend/               React + Vite client, nginx config for the container
 grafana/                dashboards and provisioning
+k8s/                    Kubernetes manifests (deployments, services, config, secrets)
 docker-compose.yml      runs everything: both services, frontend, Postgres, Kafka, Prometheus, Grafana
 ```
 
@@ -177,6 +180,46 @@ them and Grafana shows them. The provisioning and a starter dashboard are in
 `grafana/`. When you run it locally, Grafana is on http://localhost:3000
 (admin / admin) and Prometheus on http://localhost:9090.
 
+## Kubernetes
+
+The `k8s/` folder has manifests to run the whole stack on a local cluster. I used
+the Kubernetes built into Docker Desktop, so images I build locally are visible
+to the cluster without pushing them to a registry.
+
+```bash
+docker build -t incident-manager:1.1 ./incident-manager
+docker build -t notification-service:1.0 ./notification-service
+docker build -t frontend:1.0 ./frontend
+
+kubectl apply -f k8s/
+kubectl get pods -n incident-manager
+```
+
+```
+NAME                                    READY   STATUS    RESTARTS   AGE
+frontend-5b84658d49-4kh6c               1/1     Running   0          8m7s
+incident-manager-5889497496-6bw2v       1/1     Running   0          16m
+kafka-84cc478988-dkv68                  1/1     Running   0          11m
+notification-service-69fd44b845-m6n9x   1/1     Running   0          11m
+postgres-684f754476-4bq6b               1/1     Running   0          64m
+```
+
+The services are ClusterIP only, so use port-forward to reach them:
+
+```bash
+kubectl port-forward -n incident-manager svc/frontend 5173:80
+kubectl port-forward -n incident-manager svc/incident-manager 8888:8080
+```
+
+Both Spring Boot services use a startupProbe on `/actuator/health/readiness`. A
+Java application needs more time to start than a liveness probe would normally
+allow, so the startup probe holds the other two back until the application is up.
+Configuration comes from ConfigMaps and passwords from Secrets.
+
+The secrets in `k8s/` contain local development values only. In a real cluster
+they would come from Sealed Secrets, the External Secrets Operator or a cloud
+secret manager.
+
 ## Roadmap
 
 Phase 1 (done): the core domain, escalation rules, Kafka and the notification
@@ -184,11 +227,11 @@ service, JWT security, observability, CI, and the small frontend.
 
 Phase 2 (done): everything runs in containers and starts with one command,
 secrets moved to environment variables, coverage reports with JaCoCo, paging on
-the list endpoints, and OpenAPI documentation.
+the list endpoints, OpenAPI documentation, and Kubernetes manifests for a local
+cluster.
 
 Next steps I want to add:
 
-- Kubernetes manifests to run it locally
 - Deploy to AWS (RDS, ECR, ECS Fargate)
 - An AI advisor service that suggests fixes based on past incidents
 
