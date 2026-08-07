@@ -1,0 +1,95 @@
+apiVersion: v1
+kind: Secret
+metadata:
+  name: app-secret
+  namespace: incident-manager
+type: Opaque
+stringData:
+  JWT_SECRET: 0123456789abcdef0123456789abcdef0123456789abcdef0123456789abcdef
+---
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: incident-manager-config
+  namespace: incident-manager
+data:
+  SPRING_DATASOURCE_URL: jdbc:postgresql://postgres:5432/incident_manager
+  SPRING_KAFKA_BOOTSTRAP_SERVERS: kafka:9092
+  SPRING_PROFILES_ACTIVE: dev
+  MANAGEMENT_ENDPOINT_HEALTH_PROBES_ENABLED: "true"
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: incident-manager
+  namespace: incident-manager
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: incident-manager
+  template:
+    metadata:
+      labels:
+        app: incident-manager
+    spec:
+      containers:
+        - name: incident-manager
+          image: incident-manager:1.1
+          imagePullPolicy: IfNotPresent
+          ports:
+            - containerPort: 8080
+          envFrom:
+            - configMapRef:
+                name: incident-manager-config
+          env:
+            - name: SPRING_DATASOURCE_USERNAME
+              valueFrom:
+                secretKeyRef:
+                  name: postgres-secret
+                  key: POSTGRES_USER
+            - name: SPRING_DATASOURCE_PASSWORD
+              valueFrom:
+                secretKeyRef:
+                  name: postgres-secret
+                  key: POSTGRES_PASSWORD
+            - name: JWT_SECRET
+              valueFrom:
+                secretKeyRef:
+                  name: app-secret
+                  key: JWT_SECRET
+          startupProbe:
+            httpGet:
+              path: /actuator/health/readiness
+              port: 8080
+            periodSeconds: 5
+            failureThreshold: 30
+          readinessProbe:
+            httpGet:
+              path: /actuator/health/readiness
+              port: 8080
+            periodSeconds: 5
+          livenessProbe:
+            httpGet:
+              path: /actuator/health/liveness
+              port: 8080
+            periodSeconds: 10
+          resources:
+            requests:
+              memory: "512Mi"
+              cpu: "250m"
+            limits:
+              memory: "1Gi"
+              cpu: "1"
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: incident-manager
+  namespace: incident-manager
+spec:
+  selector:
+    app: incident-manager
+  ports:
+    - port: 8080
+      targetPort: 8080
