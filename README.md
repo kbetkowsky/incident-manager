@@ -230,10 +230,14 @@ secrets moved to environment variables, coverage reports with JaCoCo, paging on
 the list endpoints, OpenAPI documentation, and Kubernetes manifests for a local
 cluster.
 
-Next steps I want to add:
+Next: an AI advisor that suggests fixes based on past incidents. I want to build
+it properly instead of just calling an API, so it needs a vector search over
+closed incidents, a timeout and a circuit breaker, and a cache, and the system
+has to keep working when the model does not answer.
 
-- Deploy to AWS (RDS, ECR, ECS Fargate)
-- An AI advisor service that suggests fixes based on past incidents
+I also considered deploying this to AWS. I put that aside for now, because I
+would rather have a demo that actually runs than manifests I never use.
+
 
 ## License
 
