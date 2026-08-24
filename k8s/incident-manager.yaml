@@ -5,7 +5,8 @@ metadata:
   namespace: incident-manager
 type: Opaque
 stringData:
-  JWT_SECRET: 0123456789abcdef0123456789abcdef0123456789abcdef0123456789abcdef
+  # Local development only. Any value of 32+ characters works.
+  JWT_SECRET: local-dev-only-not-a-real-jwt-secret-change-me
 ---
 apiVersion: v1
 kind: ConfigMap
